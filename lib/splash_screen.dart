@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estaye_app/features/auth/logic/bloc/auth_bloc.dart';
-import 'package:real_estaye_app/presentation/auth/pages/sign_in_page.dart';
+import 'package:real_estaye_app/presentation/auth/pages/login_page.dart';
 import 'package:real_estaye_app/presentation/tabs/pages/tabs_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   (route) => false);
             } else if (state is AuthInitial) {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => const LoginPage(),
+                builder: (BuildContext context) => const LoginPagee(),
               ));
             }
           });

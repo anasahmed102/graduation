@@ -91,4 +91,11 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Left(EmptycacheFailure(message: "dfghjkl"));
     }
   }
+  
+  @override
+  Future<Either<Failure, UserModel>> signInAnonimsly() async{
+      return await _loginOrRegister(() {
+      return authRemoteDataSource.googleSignInOrSignUp();
+    });
+}
 }

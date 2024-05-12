@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:real_estaye_app/core/theme/app_theme.dart';
+import 'package:real_estaye_app/core/widgets/loading_widget.dart';
 import 'package:real_estaye_app/features/auth/logic/bloc/auth_bloc.dart';
 import 'package:real_estaye_app/presentation/auth/pages/sign_up_page.dart';
 import 'package:real_estaye_app/presentation/tabs/pages/tabs_screen.dart';
-import 'package:real_estaye_app/core/widgets/loading_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -220,6 +220,19 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
+                  ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          await FirebaseAuth.instance.signInAnonymously();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const NavigationPage()));
+                        } catch (e) {
+                          print('Error signing in anonymously: $e');
+                        }
+                      },
+                      child: const Text("Login Anonymously")),
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {

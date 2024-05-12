@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:real_estaye_app/core/const.dart';
+import 'package:real_estaye_app/core/lang/localization.dart';
+import 'package:real_estaye_app/core/theme/app_theme.dart';
 import 'package:real_estaye_app/features/favorites/data/model/favorites.dart';
-import 'package:real_estaye_app/presentation/favorites/pages/favorite_details_page.dart';
+import 'package:real_estaye_app/presentation/auth/pages/login_page.dart';
 
-class FavoritesWidget extends StatelessWidget {
+class FavoritesWidget extends StatefulWidget {
   const FavoritesWidget({
     Key? key,
     required this.data,
@@ -15,272 +16,265 @@ class FavoritesWidget extends StatelessWidget {
   final List<Favorites> data;
 
   @override
-  Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
+  State<FavoritesWidget> createState() => _FavoritesWidgetState();
+}
 
-    if (user == null) {
+final FirebaseAuth _auth = FirebaseAuth.instance;
+User? _user;
+
+class _FavoritesWidgetState extends State<FavoritesWidget> {
+  @override
+  void initState() {
+    super.initState();
+    _checkCurrentUser();
+  }
+
+  void _checkCurrentUser() {
+    _user = _auth.currentUser;
+  }
+
+  Future<void> deleteFavorite(String favoriteId) async {
+    try {
+      final usersCollection = FirebaseFirestore.instance.collection('users');
+      final userDocRef = usersCollection.doc(_user!.uid);
+      final favoritesCollection = userDocRef.collection('favorites');
+
+      await favoritesCollection.doc(favoriteId).delete();
+      print("Document with id $favoriteId deleted from favorites");
+    } catch (error) {
+      print("Error deleting favorite: $error");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_user == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Favorites'),
-        ),
-        body: const Center(
-          child: Text('Please log in to view favorites.'),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("Please Login to see Your favorites".tr(context)),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const LoginPagee()));
+                  },
+                  child: Text("Login".tr(context)))
+            ],
+          ),
         ),
       );
     }
 
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Favorites"),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-        ),
-        backgroundColor: Colors.red,
-        body: SafeArea(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
           children: [
-            Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.752,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16)),
-                  color: Colors.white,
-                ),
-                child: SingleChildScrollView(
-                    child: Column(children: [
-                  ListView.separated(
-                    primary: false,
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        height: 20,
-                      );
-                    },
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final favoriteData = data[index];
+            Text(
+              "Favorites".tr(context),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            if (_user != null)
+              Column(
+                children: widget.data.asMap().entries.map((entry) {
+                  final int index = entry.key;
+                  final Favorites book = entry.value;
 
-                      return Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Card(
-                          elevation: 5,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => FavoriteDetailsPage(
-                                          data: favoriteData),
-                                    ),
-                                  );
-                                },
-                                child: Stack(
-                                  alignment: Alignment.topRight,
-                                  children: [
-                                    ClipRRect(
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (_) => TempDetailsBooksPage(books: book),
+                          //   ),
+                          // );
+                        },
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Stack(
+                                alignment: Alignment.bottomRight,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(19),
+                                    child: SizedBox(
+                                      height: 160,
+                                      width: 140,
                                       child: Image.network(
-                                        favoriteData.photo,
+                                        book.photo,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 50,
-                                        width: 50,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      deleteFavorite(book.id);
+                                    },
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(
+                                          right: 8.0, bottom: 8),
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 4.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "500000 \$",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
                                         ),
-                                        child: Icon(
-                                          FontAwesomeIcons.heart,
-                                          color: context.isDarkMode
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                                Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Text(
+                                      book.properyName,
+                                      style: const TextStyle(
+                                          color: AppTheme.secondryColor,
+                                          fontSize: 15),
+                                    )),
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.place),
+                                    Text(
+                                      "32 park lorem ipsum",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 2.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.area_chart),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text("125"),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Icon(Icons.bed),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text("2"),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Icon(Icons.bedroom_baby),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text("1")
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    MaterialButton(
+                                      onPressed: () {},
+                                      color: AppTheme.btn1,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.call,
+                                            color: Colors.black,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            "Call",
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    MaterialButton(
+                                      onPressed: () {},
+                                      color: AppTheme.btn1,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.mail,
+                                            color: Colors.black,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            "Email",
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          favoriteData.properyName,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.all(3.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.place,
-                                          size: 20,
-                                        ),
-                                        Text(
-                                          "Iraq Erbil Bakhtayri",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "9924.1-1000000",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              )
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
-                ]))),
+                      ),
+                      if (index < widget.data.length - 1)
+                        const Divider(thickness: 1),
+                    ],
+                  );
+                }).toList(),
+              ),
           ],
-        )));
+        ),
+      ),
+    );
   }
 }
-
-
-// body: StreamBuilder<QuerySnapshot>(
-//   stream: realEstae.
-//   builder: (context, snapshot) {
-//     if (snapshot.connectionState == ConnectionState.waiting) {
-//       return const Center(child: CircularProgressIndicator());
-//     }
-
-//     if (snapshot.hasError) {
-//       return Center(child: Text('Error: ${snapshot.error}'));
-//     }
-
-//     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-//       return const Center(child: Text('No favorites yet.'));
-//     }
-
-//     return ListView.separated(
-//       separatorBuilder: (context, index) {
-//         return const SizedBox(
-//           height: 20,
-//         );
-//       },
-//       itemCount: snapshot.data!.docs.length,
-//       itemBuilder: (context, index) {
-//         var favoriteData =
-//             snapshot.data!.docs[index].data() as Map<String, dynamic>;
-
-//         return Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: [
-//               Stack(
-//                 alignment: Alignment.topRight,
-//                 children: [
-//                   ClipRRect(
-//                       borderRadius: BorderRadius.circular(16),
-//                       child: Image.network(favoriteData['photo'])),
-//                   Padding(
-//                     padding: const EdgeInsets.all(8.0),
-//                     child: Container(
-//                       height: 50,
-//                       width: 50,
-//                       decoration: const BoxDecoration(
-//                           shape: BoxShape.circle, color: Colors.white),
-//                       child: Icon(
-//                         FontAwesomeIcons.heart,
-//                         color: context.isDarkMode
-//                             ? Colors.white
-//                             : Colors.black,
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(
-//                 height: 10,
-//               ),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text(
-//                     favoriteData['propertyName'].toString(),
-//                     style: const TextStyle(
-//                         fontSize: 16, fontWeight: FontWeight.bold),
-//                   ),
-//                   Text(
-//                     favoriteData['propertyName'].toString(),
-//                     style: const TextStyle(
-//                         fontSize: 16, fontWeight: FontWeight.bold),
-//                   )
-//                 ],
-//               ),
-//               Row(
-//                 children: [
-//                   Text(
-//                     favoriteData['propertyName'].toString(),
-//                     style: const TextStyle(
-//                         fontSize: 16, fontWeight: FontWeight.bold),
-//                   )
-//                 ],
-//               ),
-
-//               // ListTile(
-//               //   title: Text(favoriteData['propertyName'].toString()),
-//               //   subtitle: const Text("Price "),
-//               // )
-//               const SizedBox(
-//                 height: 20,
-//               )
-//             ],
-//             // onTap: () {
-//             //   Navigator.push(context, MaterialPageRoute(builder: (_)=>DetailsPage(realEstate: )));
-//             // },
-
-//             // Add more fields as needed
-//           ),
-//         );
-//       },
-//     );
-//   },
-// ),

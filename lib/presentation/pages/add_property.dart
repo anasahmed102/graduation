@@ -198,6 +198,8 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
 
                             _formKey.currentState!.save();
                             final realEstateModel = RealEstateModel(
+                              typeOfProperty: "",
+                              type: _location,
                               id: newId,
                               properyName: _propertyName,
                               photo: _imageUrl,

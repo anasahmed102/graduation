@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:real_estaye_app/core/lang/localization.dart';
+import 'package:real_estaye_app/core/theme/app_theme.dart';
 import 'package:real_estaye_app/features/posts/logic/bloc/posts_bloc.dart';
 import 'package:real_estaye_app/features/posts/logic/favorites/favorites_bloc.dart';
+import 'package:real_estaye_app/injection.dart';
 import 'package:real_estaye_app/presentation/favorites/pages/favorites_page.dart';
 import 'package:real_estaye_app/presentation/home_page/pages/home_page.dart';
-import 'package:real_estaye_app/presentation/search_page/pages/search_page.dart';
+import 'package:real_estaye_app/presentation/pages/map_hrkn.dart';
 import 'package:real_estaye_app/presentation/profile_page/pages/profile_page.dart';
+import 'package:real_estaye_app/presentation/search_page/pages/saerch.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({Key? key}) : super(key: key);
@@ -23,6 +27,7 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   void initState() {
     BlocProvider.of<PostsBloc>(context).add(GetAllPostEvent());
+    getIt<FavoritesBloc>().add(GetAllFavoritesEvent());
     BlocProvider.of<FavoritesBloc>(context).add(GetAllFavoritesEvent());
     super.initState();
     _pageController = PageController(initialPage: _selectedIndex);
@@ -38,23 +43,17 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      // floatingActionButton: _selectedIndex != 1
-      //     ? MaterialButton(
-      //         onPressed: () {
-      //           handleLocationPermission(context);
-      //         },
-      //         shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(16)),
-      //         color: Colors.blue,
-      //         child: const Padding(
-      //           padding: EdgeInsets.all(8.0),
-      //           child: Text("Map"),
-      //         ),
-      //       )
-      //     : ElevatedButton(
-      //         onPressed: () {},
-      //         child: const Text("Show Results"),
-      //       ),
+      // floatingActionButton: MaterialButton(
+      //   onPressed: () {
+      //     handleLocationPermission(context);
+      //   },
+      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      //   color: Colors.blue,
+      //   child: const Padding(
+      //     padding: EdgeInsets.all(8.0),
+      //     child: Text("Map"),
+      //   ),
+      // ),
       body: PageView(
         controller: _pageController,
         children: _widgetOptions,
@@ -75,9 +74,9 @@ class _NavigationPageState extends State<NavigationPage> {
             icon: const Icon(Icons.search),
             label: 'Discovery'.tr(context),
           ),
-          const BottomNavigationBarItem(
+           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.book),
-            label: 'Favorites',
+            label: 'Favorites'.tr(context),
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings),
@@ -85,6 +84,7 @@ class _NavigationPageState extends State<NavigationPage> {
           ),
         ],
         currentIndex: _selectedIndex,
+        selectedItemColor: AppTheme.secondryColor,
         showUnselectedLabels: true,
         onTap: (index) {
           _pageController.animateToPage(
@@ -97,34 +97,34 @@ class _NavigationPageState extends State<NavigationPage> {
     );
   }
 
-  // Future<void> handleLocationPermission(BuildContext context) async {
-  //   final status = await Permission.location.status;
+  Future<void> handleLocationPermission(BuildContext context) async {
+    final status = await Permission.location.status;
 
-  //   if (status.isGranted) {
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(builder: (_) => const MapHrkn()),
-  //     );
-  //   } else if (status.isPermanentlyDenied) {
-  //     ScaffoldMessenger.of(context)
-  //         .showSnackBar(const SnackBar(content: Text("No Permission")));
-  //   } else {
-  //     final result = await Permission.location.request();
+    if (status.isGranted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const MapHrkn()),
+      );
+    } else if (status.isPermanentlyDenied) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No Permission")));
+    } else {
+      final result = await Permission.location.request();
 
-  //     if (result.isGranted) {
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(builder: (_) => const MapHrkn()),
-  //       );
-  //     } else if (result.isPermanentlyDenied) {
-  //       openAppSettings();
-  //     }
-  //   }
-  // }
+      if (result.isGranted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MapHrkn()),
+        );
+      } else if (result.isPermanentlyDenied) {
+        openAppSettings();
+      }
+    }
+  }
 
   static final List<Widget> _widgetOptions = <Widget>[
     const HomePageClean(),
-    const SearchPage(),
+    const SearchScreen(),
     const FavoritesPage(),
     const ProfilePage(),
   ];

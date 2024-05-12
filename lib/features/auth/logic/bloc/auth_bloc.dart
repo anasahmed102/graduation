@@ -9,6 +9,7 @@ import 'package:real_estaye_app/features/auth/domain/usecase/logout_usecase.dart
 import 'package:real_estaye_app/features/auth/domain/usecase/read_from_local_usecase.dart';
 import 'package:real_estaye_app/features/auth/domain/usecase/signin_signup_google_usecase.dart';
 import 'package:real_estaye_app/features/auth/domain/usecase/signup_usecase.dart';
+import 'package:real_estaye_app/features/auth/domain/usecase/sing_in_anonimously_usecase.dart';
 import 'package:real_estaye_app/injection.dart';
 
 part 'auth_event.dart';
@@ -45,8 +46,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           (_) => AuthInitial(),
           (user) => LoadedUserState(user: user),
         ));
-      }
+      } else if (event is SignInAnonymouslyEvent) {
+        final failureOrUser = await SignInAnonimosulyUseCase(getIt()).call();
+                  emit(_eitherFailureOrUser(failureOrUser));
 
+      }
     });
   }
   AuthState _eitherFailureOrUser(Either<Failure, UserModel> either) {

@@ -16,8 +16,7 @@ class ImplFavoritesRepository extends FavoritesRepository {
   });
 
   @override
-  Future<Either<Failure, Stream<List<Favorites>>>>
-      getAllFavorites() async {
+  Future<Either<Failure, Stream<List<Favorites>>>> getAllFavorites() async {
     if (await networkInfo.isconnected) {
       try {
         Stream<List<Favorites>> remotePosts =
@@ -27,9 +26,26 @@ class ImplFavoritesRepository extends FavoritesRepository {
       } on ServerException {
         return const Left(ServerFailure(message: "No Internet Connection"));
       } on Exception {
-        return const Left(EmptycacheFailure(
+        return const Left(WrongDataFailure(
             message:
                 "No Data, please connect to the internet and try again later"));
+      }
+    } else {
+      return const Left(OfflineFailure(message: ""));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteFavorite(int favoriteId) async {
+    if (await networkInfo.isconnected) {
+      try {
+        await realEstateRemoteDataSource.deleteFavorite(favoriteId);
+        return const Right(unit);
+      } on ServerException {
+        return const Left(ServerFailure(message: "No Internet Connection"));
+      } catch (_) {
+        return const Left(WrongDataFailure(
+            message: "Failed to delete favorite. Please try again later."));
       }
     } else {
       return const Left(OfflineFailure(message: ""));

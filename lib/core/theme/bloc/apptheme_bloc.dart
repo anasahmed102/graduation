@@ -1,4 +1,3 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +7,10 @@ import 'package:real_estaye_app/core/theme/theme_cahche.dart';
 part 'apptheme_event.dart';
 part 'apptheme_state.dart';
 
-
 class AppThemeBloc extends Bloc<AppThemeEvent, AppThemeState> {
   AppThemeBloc() : super(AppThemeInitial()) {
     on<AppThemeEvent>((event, emit) async {
-     if (event is GetCurrentThemeEvent) {
+      if (event is GetCurrentThemeEvent) {
         final themeIndex = await ThemeCacheHelper().getCachedThemeIndex();
         final theme = AppThemee.values
             .firstWhere((appTheme) => appTheme.index == themeIndex);

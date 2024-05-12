@@ -1,15 +1,20 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/material.dart';
+import 'package:real_estaye_app/core/theme/app_theme.dart';
 
 extension DarkMode on BuildContext {
   /// is dark mode currently enabled?
   bool get isDarkMode {
-    final brightness = MediaQuery.of(this).platformBrightness;
-    return brightness == Brightness.dark;
+    const brightness = AppThemee.blueDark;
+    return brightness == AppThemee.blueDark;
   }
 }
 
 final List<String> imgList = [
   "assets/images/house.jpeg",
+  "assets/images/iq.png",
+  "assets/images/us.png",
 ];
 final List<Widget> imageSliders = imgList
     .map((item) => Container(

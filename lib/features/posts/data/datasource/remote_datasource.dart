@@ -12,6 +12,7 @@ Reference storageRef = FirebaseStorage.instance.ref();
 abstract class RealEstateRemoteDataSource {
   Future<Unit> addProperty(RealEstateModel realEstateModel);
   Stream<List<RealEstateModel>> getAllPosts();
+  Future<Unit> deleteProperty(String propertyId);
 }
 
 class RealEstateRemoteDataSourceImpl extends RealEstateRemoteDataSource {
@@ -52,6 +53,17 @@ class RealEstateRemoteDataSourceImpl extends RealEstateRemoteDataSource {
       return unit;
     } catch (e) {
       throw Exception('Failed to add the property: $e');
+    }
+  }
+  @override
+  Future<Unit> deleteProperty(String propertyId) async {
+    try {
+      final CollectionReference realEstateCollection =
+          FirebaseFirestore.instance.collection('Real_Estate');
+      await realEstateCollection.doc(propertyId).delete();
+      return unit;
+    } catch (e) {
+      throw Exception('Failed to delete the property: $e');
     }
   }
 }

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estaye_app/core/widgets/loading_widget.dart';
 import 'package:real_estaye_app/features/posts/logic/bloc/posts_bloc.dart';
-import 'package:real_estaye_app/presentation/home_page/widgets/proerty_widget.dart';
+import 'package:real_estaye_app/presentation/search_page/pages/new_search_page.dart';
 
-class HomePageClean extends StatefulWidget {
-  const HomePageClean({super.key});
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
 
   @override
-  State<HomePageClean> createState() => _HomePageCleanState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _HomePageCleanState extends State<HomePageClean> {
+class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PostsBloc, PostsState>(
@@ -19,12 +19,12 @@ class _HomePageCleanState extends State<HomePageClean> {
         if (state is LoadedPostsState) {
           return RefreshIndicator(
               onRefresh: () => _onRefresh(context),
-              child: PropertWidget(
-                realEstae: state.realEstate,
+              child: NewSeearchPage(
+                data: state.realEstate,
               ));
         } else if (state is LoadedPostsState) {
-          return PropertWidget(
-            realEstae: state.realEstate,
+          return NewSeearchPage(
+            data: state.realEstate,
           );
         } else {
           return const LoadingWidget();

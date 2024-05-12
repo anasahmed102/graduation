@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Favorites {
-  final int id;
+  final String id;
   final GeoPoint location;
   final String photo;
   final String properyName;
@@ -18,7 +18,7 @@ class Favorites {
   });
 
   Favorites copyWith({
-    int? id,
+    String? id,
     GeoPoint? location,
     String? photo,
     String? properyName,
@@ -45,8 +45,8 @@ class Favorites {
 
   factory Favorites.fromMap(Map<String, dynamic> map) {
     return Favorites(
-      id: map['id'] as int,
-      location: map ['location'] as GeoPoint,
+      id: map['id'] as String,
+      location: map['location'] as GeoPoint,
       photo: map['photo'] as String,
       properyName: map['properyName'] as String,
       size: map['size'] as String,
@@ -55,7 +55,7 @@ class Favorites {
   factory Favorites.fromSnapshot(QueryDocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Favorites(
-      id: data['id'] as int,
+      id: data['id'] as String,
       properyName: data['properyName'] as String,
       photo: data['photo'] as String,
       location: data['location'] as GeoPoint,

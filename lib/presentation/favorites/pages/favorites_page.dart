@@ -145,6 +145,7 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:real_estaye_app/core/widgets/loading_widget.dart';
 import 'package:real_estaye_app/features/posts/logic/favorites/favorites_bloc.dart';
 import 'package:real_estaye_app/presentation/favorites/widgets/favorites_widget.dart';
 
@@ -170,8 +171,21 @@ class _FavoritesPageState extends State<FavoritesPage> {
           return FavoritesWidget(
             data: state.data,
           );
+        } else if (state is ErrorFavoritesState) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text("Please Login to see Your favorites"),
+                  ElevatedButton(onPressed: () {}, child: const Text("Login"))
+                ],
+              ),
+            ),
+          );
         } else {
-          return const SizedBox();
+          return const LoadingWidget();
         }
       },
       listener: (context, state) {},

@@ -26,6 +26,7 @@ void main() async {
   );
   initBinding();
 
+
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.debug,

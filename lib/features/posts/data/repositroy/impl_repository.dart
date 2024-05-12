@@ -41,6 +41,8 @@ class ImplRealEstateRepository extends RealEstateRepository {
     if (await networkInfo.isconnected) {
       try {
         realEstateRemoteDataSource.addProperty(RealEstateModel(
+          typeOfProperty: realEstateModel.typeOfProperty,
+          type: realEstateModel.type,
             id: realEstateModel.id,
             description: realEstateModel.description,
             location: realEstateModel.location,
@@ -58,4 +60,6 @@ class ImplRealEstateRepository extends RealEstateRepository {
           OfflineFailure(message: "Please Cheack Ur internet connection "));
     }
   }
+  
+
 }

@@ -8,6 +8,7 @@ import 'package:real_estaye_app/features/auth/data/datasource/remote_datasource.
 import 'package:real_estaye_app/features/auth/data/repositores/impl_repositores.dart';
 import 'package:real_estaye_app/features/auth/domain/repositroy/repositroy.dart';
 import 'package:real_estaye_app/features/auth/domain/usecase/login_usecase.dart';
+import 'package:real_estaye_app/features/auth/domain/usecase/sing_in_anonimously_usecase.dart';
 import 'package:real_estaye_app/features/auth/logic/bloc/auth_bloc.dart';
 import 'package:real_estaye_app/features/favorites/data/datasource/favorites_remote_datasource.dart';
 import 'package:real_estaye_app/features/favorites/data/repository/impl_favorite_repositoy.dart';
@@ -52,6 +53,7 @@ void initBinding() async {
   getIt.registerSingleton(GetAllFavoritesUsecases(getIt()));
 
   getIt.registerSingleton(LoginUserUseCase(getIt()));
+  getIt.registerSingleton(SignInAnonimosulyUseCase(getIt()));
   getIt.registerSingleton(AuthBloc());
   getIt.registerSingleton(PostsBloc());
   getIt.registerSingleton(FavoritesBloc());

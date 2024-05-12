@@ -6,6 +6,7 @@ abstract class AuthRepository {
   Future<Either<Failure, UserModel>> loginUser({required Map authData});
   Future<Either<Failure, UserModel>> registerUser({required Map authData});
     Future<Either<Failure, UserModel>> googleSignInOrSignUp();
+    Future<Either<Failure, UserModel>> signInAnonimsly();
   Future<Either<Failure, bool>> logout();
     Future<Either<Failure, UserModel>> getCurrentUser();
 

@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAd4zjx1iIdOOpIVmZuIuLuerCbsXw9OJY',
-    appId: '1:750052531746:android:6be2d73c08c7cbff5c747b',
+    appId: '1:750052531746:android:fdeded8ca88ab6945c747b',
     messagingSenderId: '750052531746',
     projectId: 'third-essence-403420',
     databaseURL: 'https://third-essence-403420-default-rtdb.firebaseio.com',
@@ -60,13 +60,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCYJdmZQ8jgNtsoh7adQkU7JxVW9SJDfnY',
-    appId: '1:750052531746:ios:c28eed6f9ff3b3fb5c747b',
+    appId: '1:750052531746:ios:59d8840cc35b26735c747b',
     messagingSenderId: '750052531746',
     projectId: 'third-essence-403420',
     databaseURL: 'https://third-essence-403420-default-rtdb.firebaseio.com',
     storageBucket: 'third-essence-403420.appspot.com',
     androidClientId: '750052531746-8tg76umkfupvr2pqjvpbhrrq12habbnr.apps.googleusercontent.com',
-    iosClientId: '750052531746-k5sb619q2049du9gak67bjvtb8ior8oi.apps.googleusercontent.com',
-    iosBundleId: 'com.example.realEstayeApp',
+    iosClientId: '750052531746-26536qlhstttpktbt0jduf1ip22hmf6o.apps.googleusercontent.com',
+    iosBundleId: 'com.example.1prr',
   );
 }

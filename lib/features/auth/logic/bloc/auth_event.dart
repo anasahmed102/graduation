@@ -14,13 +14,17 @@ class LoginUserEvent extends AuthEvent {
 
   LoginUserEvent(this.authData) : super([authData]);
 }
+
 class SignUpUserEvent extends AuthEvent {
   final Map authData;
 
   SignUpUserEvent(this.authData) : super([authData]);
 }
 
-class GoogleSignInSignUpEvent extends AuthEvent {}
-class LogoutEvent extends AuthEvent {}
-class GetCurrentUserEvent extends AuthEvent{}
+class SignInAnonymouslyEvent extends AuthEvent {}
 
+class GoogleSignInSignUpEvent extends AuthEvent {}
+
+class LogoutEvent extends AuthEvent {}
+
+class GetCurrentUserEvent extends AuthEvent {}

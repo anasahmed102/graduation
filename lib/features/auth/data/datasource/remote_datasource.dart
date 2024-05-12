@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart' as firebaseauth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:real_estaye_app/core/failures/excemption.dart';
@@ -8,8 +7,8 @@ abstract class AuthRemoteDataSource {
   Future<UserModel> loginUser({required Map authData});
   Future<UserModel> registerUser({required Map authData});
   Future<UserModel> googleSignInOrSignUp();
-    Future<bool> logOut();
-
+  Future<bool> logOut();
+  Future<UserModel> anonymousSignIn();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -60,6 +59,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<UserModel> anonymousSignIn() async {
+    try {
+      await auth.signInAnonymously();
+
+      final firebaseauth.User? currentUser = auth.currentUser;
+
+      final UserModel user = UserModel(
+        id: currentUser!.uid,
+        name: "Anonymous",
+        email: "",
+      );
+
+      return Future.value(user);
+    } on firebaseauth.FirebaseAuthException catch (e) {
+      throw FirebaseDataException(e.message!);
+    }
+  }
+
+  @override
   Future<UserModel> googleSignInOrSignUp() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
@@ -85,10 +103,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw FirebaseDataException(e.message!);
     }
   }
-  
+
   @override
-  Future<bool> logOut() async{
-  
+  Future<bool> logOut() async {
     try {
       await googleSignIn.signOut();
       await auth.signOut();
