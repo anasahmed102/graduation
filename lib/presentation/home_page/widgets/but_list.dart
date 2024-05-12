@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:real_estaye_app/features/posts/data/model/real_estate.dart';
+import 'package:real_estaye_app/presentation/home_page/pages/new_details_page.dart';
 
 class BuyList extends StatelessWidget {
   const BuyList({
@@ -26,7 +27,9 @@ class BuyList extends StatelessWidget {
 
           return Card(
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_)=>NewDetailsPage(realEstate: rentalProperties[index])));
+              },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -56,12 +59,12 @@ class BuyList extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  Row(
+                  const Row(
                     children: [
-                      const Icon(IconlyLight.location),
+                      Icon(IconlyLight.location),
                       Text(
-                        "${property.location}",
-                        style: const TextStyle(fontSize: 16),
+                        "Erbil",
+                        style: TextStyle(fontSize: 16),
                       ),
                     ],
                   ),

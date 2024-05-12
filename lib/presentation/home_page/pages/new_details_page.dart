@@ -23,7 +23,7 @@ class NewDetailsPage extends StatelessWidget {
     return Scaffold(
       bottomSheet: Container(
         color: appThemeData[AppThemee.blueDark]?.brightness == Brightness.dark
-            ? AppTheme.darkThemeColor
+            ? Colors.white
             : Colors.white,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 10,

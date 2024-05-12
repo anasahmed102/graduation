@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:real_estaye_app/core/theme/app_theme.dart';
 import 'package:real_estaye_app/features/posts/data/model/real_estate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../home_page/pages/new_details_page.dart';
 
@@ -131,7 +132,9 @@ class ListSearch extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         MaterialButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _launchPhoneDialer("07704051753");
+                          },
                           color: AppTheme.btn1,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8)),
@@ -195,5 +198,14 @@ class ListSearch extends StatelessWidget {
         );
       }).toList(),
     );
+  }
+
+  _launchPhoneDialer(String phoneNumber) async {
+    final url = 'tel:$phoneNumber';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

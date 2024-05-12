@@ -9,6 +9,7 @@ import 'package:real_estaye_app/features/posts/logic/favorites/favorites_bloc.da
 import 'package:real_estaye_app/injection.dart';
 import 'package:real_estaye_app/presentation/favorites/pages/favorites_page.dart';
 import 'package:real_estaye_app/presentation/home_page/pages/home_page.dart';
+import 'package:real_estaye_app/presentation/pages/add_property.dart';
 import 'package:real_estaye_app/presentation/pages/map_hrkn.dart';
 import 'package:real_estaye_app/presentation/profile_page/pages/profile_page.dart';
 import 'package:real_estaye_app/presentation/search_page/pages/saerch.dart';
@@ -42,6 +43,13 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const AddPropertyPage()));
+        },
+        child: const Text("T"),
+      ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       // floatingActionButton: MaterialButton(
       //   onPressed: () {
@@ -74,8 +82,8 @@ class _NavigationPageState extends State<NavigationPage> {
             icon: const Icon(Icons.search),
             label: 'Discovery'.tr(context),
           ),
-           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.book),
+          BottomNavigationBarItem(
+            icon: const Icon(FontAwesomeIcons.book),
             label: 'Favorites'.tr(context),
           ),
           BottomNavigationBarItem(

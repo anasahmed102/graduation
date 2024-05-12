@@ -13,8 +13,6 @@ extension DarkMode on BuildContext {
 
 final List<String> imgList = [
   "assets/images/house.jpeg",
-  "assets/images/iq.png",
-  "assets/images/us.png",
 ];
 final List<Widget> imageSliders = imgList
     .map((item) => Container(
@@ -42,14 +40,6 @@ final List<Widget> imageSliders = imgList
                         ),
                         padding: const EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 20.0),
-                        child: Text(
-                          'No. ${imgList.indexOf(item)} Project',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                       ),
                     ),
                   ],
