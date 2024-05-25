@@ -17,7 +17,7 @@ extension ColorExtension on BuildContext {
   }
 }
 
-class AppTtheme {
+class AppTthemeq {
   static Color textField1 = const Color(0xFFF7F8F8);
   static Color iconColor1 = const Color(0xFF7B6F72);
   static Color lineColor1 = const Color(0xFF1D1617);

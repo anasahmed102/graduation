@@ -24,8 +24,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  initBinding();
 
+  initBinding();
 
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug,
@@ -40,64 +40,64 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => PostsBloc(),
-          ),
-          BlocProvider(
-            create: (context) => FavoritesBloc(),
-          ),
-          BlocProvider(
-            create: (context) => AddUpdateDeleteProperyBloc(),
-          ),
-          BlocProvider(
-            create: (context) => getIt<AuthBloc>()..add(GetCurrentUserEvent()),
-          ),
-          BlocProvider(
-            create: (context) => AppThemeBloc()..add(GetCurrentThemeEvent()),
-          ),
-          BlocProvider(
-            create: (context) => LocalizeCubit()..getSavedLanguage(),
-          ),
-        ],
-        child: BlocBuilder<LocalizeCubit, ChangeLocaleState>(
-          builder: (context, state) {
-            return BlocConsumer<AppThemeBloc, AppThemeState>(
-              listener: (context, themeState) {
-              },
-              builder: (context, themeState) {
-                if (themeState is LoadedThemeState) {
-                  return MaterialApp(
-                    locale: state.locale,
-                    supportedLocales: const [Locale('en'), Locale('ar')],
-                    localizationsDelegates: const [
-                      AppLocalization.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    localeResolutionCallback: (deviceLocale, supportedLocales) {
-                      for (var locale in supportedLocales) {
-                        if (deviceLocale != null &&
-                            deviceLocale.languageCode == locale.languageCode) {
-                          return deviceLocale;
-                        }
+      providers: [
+        BlocProvider(
+          create: (context) => PostsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => FavoritesBloc(),
+        ),
+        BlocProvider(
+          create: (context) => AddUpdateDeleteProperyBloc(),
+        ),
+        BlocProvider(
+          create: (context) => getIt<AuthBloc>()..add(GetCurrentUserEvent()),
+        ),
+        BlocProvider(
+          create: (context) => AppThemeBloc()..add(GetCurrentThemeEvent()),
+        ),
+        BlocProvider(
+          create: (context) => LocalizeCubit()..getSavedLanguage(),
+        ),
+      ],
+      child: BlocBuilder<LocalizeCubit, ChangeLocaleState>(
+        builder: (context, state) {
+          return BlocConsumer<AppThemeBloc, AppThemeState>(
+            listener: (context, themeState) {},
+            builder: (context, themeState) {
+              if (themeState is LoadedThemeState) {
+                return MaterialApp(
+                  locale: state.locale,
+                  supportedLocales: const [Locale('en'), Locale('ar')],
+                  localizationsDelegates: const [
+                    AppLocalization.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  localeResolutionCallback: (deviceLocale, supportedLocales) {
+                    for (var locale in supportedLocales) {
+                      if (deviceLocale != null &&
+                          deviceLocale.languageCode == locale.languageCode) {
+                        return deviceLocale;
                       }
-                      return supportedLocales.first;
-                    },
-                    theme: themeState.themeData,
-                    debugShowCheckedModeBanner: false,
-                    title: 'Theme App',
-                    home: const SplashScreen(),
-                  );
-                } else {
-                  return const CircularProgressIndicator(
-                    color: Colors.white,
-                  );
-                }
-              },
-            );
-          },
-        ));
+                    }
+                    return supportedLocales.first;
+                  },
+                  theme: themeState.themeData,
+                  debugShowCheckedModeBanner: false,
+                  title: 'Theme App',
+                  home: const SplashScreen(),
+                );
+              } else {
+                return const CircularProgressIndicator(
+                  color: Colors.white,
+                );
+              }
+            },
+          );
+        },
+      ),
+    );
   }
 }

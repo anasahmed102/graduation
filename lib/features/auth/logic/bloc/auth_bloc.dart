@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -27,6 +28,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthLoadingState());
         final failureOrUser =
             await SignUpUserUseCase(getIt()).call(authData: event.authData);
+        if (failureOrUser.isRight()) {
+          final user = (failureOrUser as Right).value;
+          await _storeUserInFirestore(user);
+        }
         emit(_eitherFailureOrUser(failureOrUser));
       } else if (event is GoogleSignInSignUpEvent) {
         emit(AuthLoadingState());
@@ -48,11 +53,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       } else if (event is SignInAnonymouslyEvent) {
         final failureOrUser = await SignInAnonimosulyUseCase(getIt()).call();
-                  emit(_eitherFailureOrUser(failureOrUser));
-
+        emit(_eitherFailureOrUser(failureOrUser));
       }
     });
   }
+
   AuthState _eitherFailureOrUser(Either<Failure, UserModel> either) {
     return either.fold(
       (failure) {
@@ -60,6 +65,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       },
       (user) => LoadedUserState(user: user),
     );
+  }
+
+  Future<void> _storeUserInFirestore(UserModel user) async {
+    final firestore = FirebaseFirestore.instance;
+    try {
+      DocumentReference userDocRef =
+          firestore.collection('users').doc(user.uid);
+      DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
+      Map<String, dynamic> userData = {
+        'email': user.email,
+        'uid': user.uid,
+      };
+
+      if (!userDocSnapshot.exists ||
+          (userDocSnapshot.data() as Map<String, dynamic>?)
+                  ?.containsKey('type') !=
+              true) {
+        userData['type'] = 'user';
+      }
+
+      await userDocRef.set(userData, SetOptions(merge: true));
+
+      print('User information successfully saved to Firestore.');
+    } catch (e) {
+      print("Error storing user in Firestore: $e");
+    }
   }
 
   String _mapFailureToMessage(Failure failure) {

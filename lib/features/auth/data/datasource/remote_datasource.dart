@@ -28,7 +28,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           email: authData['email'], password: authData['password']);
 
       final UserModel user = UserModel(
-        id: firebaseUser.user!.uid,
+        uid: firebaseUser.user!.uid,
         email: firebaseUser.user!.email ?? "",
         name: firebaseUser.user!.displayName ?? "",
       );
@@ -47,7 +47,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       final UserModel user = UserModel(
-        id: firebaseUser.user!.uid,
+        uid: firebaseUser.user!.uid,
         email: firebaseUser.user!.email ?? "",
         name: firebaseUser.user!.displayName ?? "",
       );
@@ -66,7 +66,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final firebaseauth.User? currentUser = auth.currentUser;
 
       final UserModel user = UserModel(
-        id: currentUser!.uid,
+        uid: currentUser!.uid,
         name: "Anonymous",
         email: "",
       );
@@ -93,7 +93,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       await auth.signInWithCredential(credential);
 
       final UserModel user = UserModel(
-        id: googleSignInAccount.id,
+        uid: googleSignInAccount.id,
         name: googleSignInAccount.displayName ?? "",
         email: googleSignInAccount.email,
       );

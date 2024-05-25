@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:real_estaye_app/core/const.dart';
 import 'package:real_estaye_app/core/theme/app_theme.dart';
 import 'package:real_estaye_app/core/widgets/snack_bar.dart';
 import 'package:real_estaye_app/features/posts/data/model/real_estate.dart';
@@ -145,12 +144,8 @@ class NewDetailsPage extends StatelessWidget {
                                 }
                               }
                             },
-                            icon: Icon(
-                              FontAwesomeIcons.heart,
-                              color: context.isDarkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                            )),
+                            icon: const Icon(FontAwesomeIcons.heart,
+                                color: Colors.black)),
                       ),
                     ),
                   ),

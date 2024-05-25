@@ -7,20 +7,20 @@ import 'package:real_estaye_app/core/theme/app_theme.dart';
 import 'package:real_estaye_app/features/posts/logic/bloc/posts_bloc.dart';
 import 'package:real_estaye_app/features/posts/logic/favorites/favorites_bloc.dart';
 import 'package:real_estaye_app/injection.dart';
-import 'package:real_estaye_app/presentation/favorites/pages/favorites_page.dart';
 import 'package:real_estaye_app/presentation/home_page/pages/home_page.dart';
+import 'package:real_estaye_app/presentation/pages/add_property.dart';
 import 'package:real_estaye_app/presentation/pages/map_hrkn.dart';
 import 'package:real_estaye_app/presentation/profile_page/pages/profile_page.dart';
 import 'package:real_estaye_app/presentation/search_page/pages/saerch.dart';
 
-class NavigationPage extends StatefulWidget {
-  const NavigationPage({Key? key}) : super(key: key);
+class AdminNavigationPage extends StatefulWidget {
+  const AdminNavigationPage({Key? key}) : super(key: key);
 
   @override
-  State<NavigationPage> createState() => _NavigationPageState();
+  State<AdminNavigationPage> createState() => _AdminNavigationPageState();
 }
 
-class _NavigationPageState extends State<NavigationPage> {
+class _AdminNavigationPageState extends State<AdminNavigationPage> {
   int _selectedIndex = 0;
   late PageController _pageController;
 
@@ -42,18 +42,18 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      // floatingActionButton: MaterialButton(
-      //   onPressed: () {
-      //     handleLocationPermission(context);
-      //   },
-      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      //   color: Colors.blue,
-      //   child: const Padding(
-      //     padding: EdgeInsets.all(8.0),
-      //     child: Text("Map"),
-      //   ),
-      // ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: MaterialButton(
+        onPressed: () {
+          handleLocationPermission(context);
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: Colors.blue,
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text("Map"),
+        ),
+      ),
       body: PageView(
         controller: _pageController,
         children: _widgetOptions,
@@ -75,12 +75,12 @@ class _NavigationPageState extends State<NavigationPage> {
             label: 'Discovery'.tr(context),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(FontAwesomeIcons.book),
-            label: 'Favorites'.tr(context),
-          ),
-          BottomNavigationBarItem(
             icon: const Icon(Icons.settings),
             label: 'Settings'.tr(context),
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(FontAwesomeIcons.plus),
+            label: 'Add'.tr(context),
           ),
         ],
         currentIndex: _selectedIndex,
@@ -125,7 +125,7 @@ class _NavigationPageState extends State<NavigationPage> {
   static final List<Widget> _widgetOptions = <Widget>[
     const HomePageClean(),
     const SearchScreen(),
-    const FavoritesPage(),
     const ProfilePage(),
+    const AddPropertyPage(),
   ];
 }

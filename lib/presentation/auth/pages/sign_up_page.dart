@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:real_estaye_app/core/theme/app_theme.dart';
 import 'package:real_estaye_app/features/auth/logic/bloc/auth_bloc.dart';
-import 'package:real_estaye_app/presentation/tabs/pages/tabs_screen.dart';
+import 'package:real_estaye_app/presentation/auth/pages/login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -35,7 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
         if (state is LoadedUserState) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const NavigationPage()),
+            MaterialPageRoute(builder: (_) => const LoginPagee()),
             (route) => false,
           );
         } else if (state is AuthErrorState) {
@@ -112,7 +112,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(
                     width: 200,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           Map authData = {
                             "email": _emailController.text,

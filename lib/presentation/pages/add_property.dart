@@ -8,8 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:real_estaye_app/core/theme/app_theme.dart';
 import 'package:real_estaye_app/features/posts/data/model/real_estate.dart';
 import 'package:real_estaye_app/features/posts/logic/addUpdateDeleteProperty/bloc/add_update_delete_propery_bloc.dart';
+import 'package:real_estaye_app/presentation/pages/map_page.dart';
 
 class AddPropertyPage extends StatefulWidget {
   const AddPropertyPage({Key? key}) : super(key: key);
@@ -22,11 +25,11 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final collectionRef = FirebaseFirestore.instance.collection('Real_Estate');
 
-  String _propertyName = "";
-  String _location = "";
-  String _price = "";
-  String _size = "";
-  String _description = "";
+  final String _propertyName = "";
+  final String _location = "";
+  final String _price = "";
+  final String _size = "";
+  final String _description = "";
   File? _image;
   String _imageUrl = "";
   bool _isUploading = false;
@@ -130,42 +133,33 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    decoration:
-                        const InputDecoration(labelText: 'Property Name'),
-                    onSaved: (value) {
-                      _propertyName = value!;
-                    },
-                    validator: _validatePropertyName,
+                  const TextField(
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.real_estate_agent,
+                        color: AppTheme.primaryColor,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          borderSide: BorderSide(color: AppTheme.primaryColor)),
+                      border: OutlineInputBorder(),
+                      labelText: "property Name",
+                    ),
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Location'),
-                    onSaved: (value) {
-                      _location = value!;
+                  ElevatedButton(
+                    onPressed: () {
+                      handleLocationPermission(context);
                     },
-                    validator: _validateLocation,
+                    child: const Text("data"),
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Price'),
-                    onSaved: (value) {
-                      _price = value!;
-                    },
-                    validator: _validatePrice,
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Size'),
-                    onSaved: (value) {
-                      _size = value!;
-                    },
-                    validator: _validateSize,
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Description'),
-                    onSaved: (value) {
-                      _description = value!;
-                    },
-                    validator: _validateDescription,
-                  ),
+                  // TextFormField(
+                  //   decoration: const InputDecoration(labelText: 'Location'),
+                  //   onSaved: (value) {
+                  //     _location = value!;
+                  //   },
+                  //   validator: _validateLocation,
+                  // ),
+
                   ElevatedButton(
                     onPressed: () {
                       getImage();
@@ -233,5 +227,30 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
         ),
       ),
     );
+  }
+
+  Future<void> handleLocationPermission(BuildContext context) async {
+    final status = await Permission.location.status;
+
+    if (status.isGranted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const MyMapPage()),
+      );
+    } else if (status.isPermanentlyDenied) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No Permission")));
+    } else {
+      final result = await Permission.location.request();
+
+      if (result.isGranted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MyMapPage()),
+        );
+      } else if (result.isPermanentlyDenied) {
+        openAppSettings();
+      }
+    }
   }
 }

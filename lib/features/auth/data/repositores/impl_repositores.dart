@@ -1,4 +1,3 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:real_estaye_app/core/failures/excemption.dart';
 import 'package:real_estaye_app/core/failures/failures.dart';
@@ -41,7 +40,6 @@ class AuthRepositoryImpl implements AuthRepository {
     });
   }
 
-
   @override
   Future<Either<Failure, bool>> logout() async {
     try {
@@ -63,7 +61,7 @@ class AuthRepositoryImpl implements AuthRepository {
         final user = await loginOrRegister();
 
         final userModel = UserModel(
-          id: user.id,
+          uid: user.uid,
           email: user.email,
           name: user.name,
         );
@@ -91,11 +89,11 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Left(EmptycacheFailure(message: "dfghjkl"));
     }
   }
-  
+
   @override
-  Future<Either<Failure, UserModel>> signInAnonimsly() async{
-      return await _loginOrRegister(() {
+  Future<Either<Failure, UserModel>> signInAnonimsly() async {
+    return await _loginOrRegister(() {
       return authRemoteDataSource.googleSignInOrSignUp();
     });
-}
+  }
 }

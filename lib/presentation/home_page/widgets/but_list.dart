@@ -19,7 +19,12 @@ class BuyList extends StatelessWidget {
 
     return SizedBox(
       height: 300,
-      child: ListView.builder(
+      child: ListView.separated(
+        separatorBuilder: (context, index) {
+          return const SizedBox(
+            width: 10,
+          );
+        },
         scrollDirection: Axis.horizontal,
         itemCount: rentalProperties.length,
         itemBuilder: (context, index) {
@@ -28,7 +33,11 @@ class BuyList extends StatelessWidget {
           return Card(
             child: GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_)=>NewDetailsPage(realEstate: rentalProperties[index])));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => NewDetailsPage(
+                            realEstate: rentalProperties[index])));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -4,11 +4,11 @@ import 'dart:convert';
 import 'package:real_estaye_app/features/auth/logic/bloc/auth_bloc.dart';
 
 class UserModel {
-  final String id;
+  final String uid;
   final String email;
   final String name;
   UserModel({
-    required this.id,
+    required this.uid,
     required this.email,
     required this.name,
   });
@@ -19,7 +19,7 @@ class UserModel {
     String? name,
   }) {
     return UserModel(
-      id: id ?? this.id,
+      uid: id ?? this.uid,
       email: email ?? this.email,
       name: name ?? this.name,
     );
@@ -27,7 +27,7 @@ class UserModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'id': uid,
       'email': email,
       'name': name,
     };
@@ -35,7 +35,7 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] as String,
+      uid: map['id'] as String,
       email: map['email'] as String,
       name: map['name'] as String,
     );
@@ -47,17 +47,18 @@ class UserModel {
       UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'UserModel(id: $id, email: $email, name: $name)';
+  String toString() => 'UserModel(id: $uid, email: $email, name: $name)';
 
   @override
   bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
 
-    return other.id == id && other.email == email && other.name == name;
+    return other.uid == uid && other.email == email && other.name == name;
   }
 
   @override
-  int get hashCode => id.hashCode ^ email.hashCode ^ name.hashCode;
+  int get hashCode => uid.hashCode ^ email.hashCode ^ name.hashCode;
 
-  fold(NotLoginState Function(dynamic failure) param0, LoadedUserState Function(dynamic user) param1) {}
+  fold(NotLoginState Function(dynamic failure) param0,
+      LoadedUserState Function(dynamic user) param1) {}
 }
